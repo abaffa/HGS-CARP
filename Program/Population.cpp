@@ -669,8 +669,10 @@ bool Population::solutionChecker(vector < vector < vector < int > > > & allRoute
 		}
 	}
 
-	if ((params->type != 35 && totalCost != expectedCost) || (params->type == 35 && maxRouteLength != expectedMaxRoute))
+//	if ((params->type != 35 && totalCost != expectedCost) || (params->type == 35 && maxRouteLength != expectedMaxRoute))
+	if ((params->type != 35 && abs(totalCost - expectedCost) > 1e-7) || (params->type == 35 && maxRouteLength != expectedMaxRoute))
 	{
+		cout << totalCost << " " << expectedCost << endl;
 		cout << "SOLUTION CHECKER: Cost is not correct" << endl ;
 		return false ;
 	}

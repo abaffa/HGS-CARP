@@ -29,6 +29,9 @@
 #include <algorithm>
 #include "Client.h"
 #include "Vehicle.h"
+
+#include "TspLikeLoader.h"
+
 using namespace std ;
 
 // little function used to clear some arrays
@@ -81,6 +84,18 @@ public:
 			   35 MM-kWRPP (Min-Max Windy Rural Postman Problem)
 			   */
 	int type ;
+	// Instance format
+	/*
+	format =     // This lists the instace file formats
+				0 CARPLIB
+				1 TSPLIKELIB
+				*/
+
+
+	// is it a directed graph
+	bool directedGraph ;
+
+	int format ;
 	bool multiDepot ; // is there multiple depots in the problem
 	bool periodique ; // is there multiple periods in the problem
 	bool isTurnPenalties ; // is there turn penalties
@@ -194,14 +209,21 @@ public:
 	// get the data from the stream
 	void preleveDonnees (string nomInstance) ;
 	void ar_parseOtherLinesCARP(); // some sub-procedures when reading the various instance formats
+	void tspLikeLoader_ar_parseOtherLinesCARP(TspLikeLoader *loader);
+
 	void ar_parseOtherLinesNEARP();
+	
 	void ar_computeDistancesNodes();
+	void tspLikeLoader_ar_computeDistancesNodes();
+
 	void ar_parseOtherLinesNEARP_TP();
 	int ar_tempIndexDepot ;
 	int parsing_courNbArcs ;
 
 	// reading a customer from the stream
 	void getClient (int i, Client * myCli);
+	void tspLikeLoader_getClient(int i, Edge edge, Client * myCli);
+	
 
 	// builds the other data structures (granular search etc...)
 	void calculeStructures () ;
@@ -218,7 +240,7 @@ public:
 	void shuffleProches () ;
 
 	// constructor
-	Params(string nomInstance, string nomSolution, string nomBKS, int seedRNG, int type, int nbVeh, int nbDep, bool isSearchingFeasible);
+	Params(string nomInstance, string nomSolution, string nomBKS, int seedRNG, int type, int format, bool directed, int nbVeh, int nbDep, bool isSearchingFeasible);
 
 	// destructor
 	~Params(void);

@@ -61,13 +61,14 @@ int main (int argc, char *argv[])
 			nb_ticks_allowed = c.get_cpu_time() * CLOCKS_PER_SEC;
 
 			// initialisation of the Parameters
-			mesParametres = new Params(c.get_path_to_instance(),c.get_path_to_solution(),c.get_path_to_BKS(),c.get_seed(),c.get_type(),c.get_nbVeh(),c.get_nbDep(),false) ;
+			mesParametres = new Params(c.get_path_to_instance(),c.get_path_to_solution(),c.get_path_to_BKS(),c.get_seed(), c.get_type(), c.get_format(), c.is_graph_oriented(),c.get_nbVeh(),c.get_nbDep(),false) ;
 
 			// Running the algorithm
 			population = new Population(mesParametres) ;
 			Genetic solver(mesParametres,population,nb_ticks_allowed,true);
 
-			solver.evolve(20000,1); // First parameter (20000) controls the number of iterations without improvement before termination
+			//solver.evolve(20000,1); // First parameter (20000) controls the number of iterations without improvement before termination
+			solver.evolve(1000, 1);
 
 			// Printing the solution
 			population->ExportBest(c.get_path_to_solution());
@@ -79,7 +80,7 @@ int main (int argc, char *argv[])
 			return 0 ;
 		}
 
-
+		
 		/* SOME PROBLEMS CONSIDERED IN THE PAPER INVOLVE ANOTHER OBJECTIVE, such as fleet size minimization, or minimization of the maximum tour */
 		/* THIS IS DONE HERE BY RUNNING ITERATIVELY THE ALGORITHM with a decreasing fleet or distance constraint */
 		// fleet size minimization (minFleetSize = true) -- applying the algorithm with a decreasing fleet size, as long as a feasible solution is found
@@ -93,7 +94,7 @@ int main (int argc, char *argv[])
 			while (validExist) // A feasible solution has been found, we can continue to decrease (either the number of vehicles or the distance constraint, depending on the case)
 			{	
 				// Setting the parameters of the next problem
-				mesParametresTab.push_back(new Params(c.get_path_to_instance(),c.get_path_to_solution(),c.get_path_to_BKS(),c.get_seed(),c.get_type(),veh,c.get_nbDep(),true)) ;
+				mesParametresTab.push_back(new Params(c.get_path_to_instance(),c.get_path_to_solution(),c.get_path_to_BKS(),c.get_seed(),c.get_type(), c.get_format(), c.is_graph_oriented(), veh,c.get_nbDep(),true)) ;
 				nbpop = (int)mesParametresTab.size() ;
 				nbOverallLoop ++ ; // counting the number of subproblems which have been resolved
 
@@ -162,7 +163,7 @@ int main (int argc, char *argv[])
 			{
 				veh ++ ;
 				cout << "######### Second phase : minimizing Distance with " << veh << " vehicles" << endl ;
-				mesParametres2 = new Params(c.get_path_to_instance(),c.get_path_to_solution(),c.get_path_to_BKS(),c.get_seed(),c.get_type(),veh,c.get_nbDep(),false) ;
+				mesParametres2 = new Params(c.get_path_to_instance(),c.get_path_to_solution(),c.get_path_to_BKS(),c.get_seed(),c.get_type(), c.get_format(), c.is_graph_oriented(),veh,c.get_nbDep(),false) ;
 				population2 = new Population(mesParametres2) ;
 				if (nbpop >= 1 && populationTab[nbpop-1]->getIndividuBestValide() != NULL) 
 					population2->addAllIndividus(populationTab[nbpop-1]);

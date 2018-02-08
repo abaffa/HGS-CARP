@@ -53,9 +53,11 @@ commandline::commandline(int argc, char* argv[])
 	SetDefaultOutput(string(argv[1]));
 	cpu_time = 300; // Five minutes is default CPU time
 	seed = 0;
-	type = -1 ;
+	type = -1;
+	format = -1;
 	nbVeh = -1 ;
 	nbDep = -1 ;
+	directedGraph = NULL;
 
 	// reading the commandline parameters
 	for ( int i = 2 ; i < argc ; i += 2 )
@@ -68,12 +70,16 @@ commandline::commandline(int argc, char* argv[])
 			BKS_name = string(argv[i+1]);
 		else if ( string(argv[i]) == "-seed" )
 			seed = atoi(argv[i+1]);
-		else if ( string(argv[i]) == "-type" )
-			type = atoi(argv[i+1]);
+		else if ( string(argv[i]) == "-type")
+			type = atoi(argv[i + 1]);
+		else if ( string(argv[i]) == "-format")
+			format = atoi(argv[i + 1]);
 		else if ( string(argv[i]) == "-veh" )
 			nbVeh = atoi(argv[i+1]);
-		else if ( string(argv[i]) == "-dep" )
-			nbDep = atoi(argv[i+1]);
+		else if (string(argv[i]) == "-dep")
+			nbDep = atoi(argv[i + 1]);
+		else if (string(argv[i]) == "-dir")
+			directedGraph = atoi(argv[i + 1]) == 1;
 		else
 		{
 			cout << "Non-recognized command : " << string(argv[i]) << endl ;
@@ -83,15 +89,15 @@ commandline::commandline(int argc, char* argv[])
 
 	if (type == -1)
 	{
-		cout << "Please specify a problem type : " << endl ;
-		cout << "-type 30 = CARP" << endl ;
-		cout << "-type 31 = MCGRP" << endl ;
-		cout << "-type 32 = PCARP" << endl ;
-		cout << "-type 33 = MDCARP" << endl ;
-		cout << "-type 34 = MCGRP-TP" << endl ;
-		cout << "-type 35 = MM-kWRPP" << endl ;
+		cout << "Please specify a problem type : " << endl;
+		cout << "-type 30 = CARP" << endl;
+		cout << "-type 31 = MCGRP" << endl;
+		cout << "-type 32 = PCARP" << endl;
+		cout << "-type 33 = MDCARP" << endl;
+		cout << "-type 34 = MCGRP-TP" << endl;
+		cout << "-type 35 = MM-kWRPP" << endl;
 		command_ok = false;
-		return ;
+		return;
 	}
 
 	if (type == 32 && nbVeh == -1)
@@ -109,6 +115,26 @@ commandline::commandline(int argc, char* argv[])
 		return ;
 	}
 
+	if (directedGraph == NULL)
+	{
+		cout << "Assuming -dir = 0 - undirected Graph" << endl;
+		directedGraph = false;
+	}
+
+
+	if (format == -1)
+	{
+		cout << "Assuming -format 0 = CARPLIB" << endl;
+		format = 0;
+	}
+	else if(format <0 || format > 1)
+	{
+		cout << "Please specify a valid instance file format : " << endl;
+		cout << "-type 0 = CARPLIB" << endl;
+		cout << "-type 1 = TSPLIB LIKE" << endl;
+		command_ok = false;
+		return;
+	}
 	command_ok = true;
 }
 
@@ -132,6 +158,16 @@ string commandline::get_path_to_BKS()
 int commandline::get_type()
 {
 	return type;
+}
+
+int commandline::get_format()
+{
+	return format;
+}
+
+bool commandline::is_graph_oriented()
+{
+	return directedGraph;
 }
 
 int commandline::get_nbVeh()

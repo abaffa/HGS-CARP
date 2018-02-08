@@ -40,6 +40,9 @@ class commandline
 		// instance type, if given (see definitions in Params.h)
 		int type;
 
+		// instance format if given (see definitions in Params.h)
+		int format;
+
 		// nbVehicles, if given (for the MM-kWRPP, the fleet size has to be specified)
 		int nbVeh ;
 
@@ -58,6 +61,9 @@ class commandline
 		// simple setters
         void SetDefaultOutput(string to_parse);
 
+		// Graph is oriented
+		bool directedGraph;
+
     public:
 
         // constructor
@@ -71,6 +77,8 @@ class commandline
         string get_path_to_BKS();
         int get_cpu_time();
 		int get_type();
+		int get_format();
+		bool is_graph_oriented();
 		int get_nbVeh();
 		int get_nbDep();
         int get_seed();

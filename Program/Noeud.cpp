@@ -27,7 +27,8 @@ Noeud::Noeud(bool estUnDepot, int cour,int jour, bool estPresent, Noeud * suiv ,
 	if (estUnDepot) ccour = 0 ;
 
 	// Initialization of the coutInsertion structure
-	for (int i=0 ; i < params->cli[ccour].visits.size() ; i++)
+	//for (int i=0 ; i < params->cli[ccour].visits.size() ; i++)
+	for (size_t i = 0; i < params->cli[ccour].visits.size(); i++)
 	{
 		coutInsertion.push_back(1.e30) ;
 		placeInsertion.push_back(NULL) ;

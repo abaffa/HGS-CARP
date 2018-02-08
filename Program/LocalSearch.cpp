@@ -1866,7 +1866,7 @@ bool LocalSearch::ejectionChains (int day)
 			nbEjectionChainsNodes += orderEnds[myID]->nbCustNodesInChain ;
 			elementCour = orderEnds[myID];
 			elementPred = elementCour->pred ;
-			Noeud * insertionPosition ;
+			Noeud * insertionPosition = NULL; //Noeud * insertionPosition ;
 			Noeud * insertionPositionTemp ;
 			while (elementCour != NULL)
 			{

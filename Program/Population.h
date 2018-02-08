@@ -121,7 +121,8 @@ class Population
    // Solution check
    // Verifies the cost and feasibility of the solution
    // Using only the instance data and the shortest path data (not relying on the auxiliary data structures)
-   bool solutionChecker(vector < vector < vector < int > > > & allRoutes, vector < vector < vector < pair <int,int > > > > & allRoutesArcs, double expectedCost, double expectedMaxRoute);
+   bool solutionChecker(vector < vector < vector < int > > > & allRoutes, vector < vector < vector < pair <int,int > > > > & allRoutesArcs, double 
+, double expectedMaxRoute);
    
    // Print the best solution in the BKS file, only if its better than the previous BKS
    void ExportBKS (string nomFichier) ;

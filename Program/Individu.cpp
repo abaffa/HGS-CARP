@@ -208,18 +208,18 @@ void Individu::generalSplit()
 	else 
 		estValide = false;
 
+	// A quick test for safety (to avoid any possibility of infinite loops and printouts)
+	if (params->borne >= 100.0)
+		throw string("Impossible to Split, most likely a problem of the dataset, aborting the run");
+
 	// If split was unsuccessful, we allow more capacity violations
 	// Usually, the allowed capacity violation is largely sufficient, and this message would indicate a bug.
 	if ( coutSol.evaluation > 1.e20 ) 
 	{
-		cout << "Increasing the capacity violation limit in Split" << endl ;
+		cout << "Increasing the capacity violation limit in Split " << coutSol.evaluation << " " << params->borne << endl ;
 		params->borne *= 1.1 ;
 		generalSplit();
 	}
-
-	// A quick test for safety (to avoid any possibility of infinite loops and printouts)
-	if (params->borne >= 100.0)
-		throw string ("Impossible to Split, most likely a problem of the dataset, aborting the run"); 
 
 	isFitnessComputed = true ;
 	measureSol(); // calling a post-processing function which fills all other data structures and verifies the solution cost
