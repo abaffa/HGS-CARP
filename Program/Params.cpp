@@ -897,7 +897,6 @@ void Params::tspLikeLoader_ar_computeDistancesNodes()
 	// simple application of the Floyd Warshall algorithm
 	for (int k = 0; k <= ar_NodesNonRequired + ar_NodesRequired; k++)
 	{
-		cout << k << endl;
 		for (int i = 0; i <= ar_NodesNonRequired + ar_NodesRequired; i++)
 		{
 			for (int j = 0; j <= ar_NodesNonRequired + ar_NodesRequired; j++)
