@@ -1,81 +1,52 @@
-all : gencarp
+ifeq ($(CC),g++)
+  FLAGS=-O3 -march=native -std=c++11
+#  FLAGS=-O3 -Wall -g -ggdb
+  DFLAGS=-ggdb -std=c++11
+endif
 
-CCC = g++
-CCFLAGS = -O3
-LIBS= -lm
-TARGETDIR=.
-CPPFLAGS += \
-         -I.
-        
-OBJS2 = \
-        $(TARGETDIR)/Client.o \
-        $(TARGETDIR)/Vehicle.o \
-        $(TARGETDIR)/commandline.o \
-	    $(TARGETDIR)/Genetic.o \
-        $(TARGETDIR)/Individu.o \
-        $(TARGETDIR)/LocalSearch.o \
-        $(TARGETDIR)/main.o \
-        $(TARGETDIR)/Noeud.o \
-        $(TARGETDIR)/SeqData.o \
-        $(TARGETDIR)/Params.o \
-        $(TARGETDIR)/Population.o \
-        $(TARGETDIR)/Route.o
-        
-	
-$(TARGETDIR)/gencarp: $(OBJS2)
-	$(CCC)  $(CCFLAGS) -o $(TARGETDIR)/gencarp $(OBJS2)
+ifeq ($(CC),icpc)
+  FLAGS=-fast -msse4.2 -ipo -std=c++11
+  DFLAGS=-ggdb -std=c++11
+endif
 
-$(TARGETDIR)/Client.o: Client.h Client.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Client.cpp -o $(TARGETDIR)/Client.o
+SRC=$(patsubst source/%, %, $(wildcard source/*.cpp))
+OBJ=$(patsubst %.cpp, release/%.o, ${SRC})
+DOBJ=$(patsubst %.cpp, debug/%.o, ${SRC})
 
-$(TARGETDIR)/Vehicle.o: Vehicle.h Vehicle.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Vehicle.cpp -o $(TARGETDIR)/Vehicle.o
-	
-$(TARGETDIR)/commandline.o: commandline.h commandline.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c commandline.cpp -o $(TARGETDIR)/commandline.o
-	
-$(TARGETDIR)/Genetic.o: Genetic.h Genetic.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Genetic.cpp -o $(TARGETDIR)/Genetic.o
+all: dir $(OBJ)
+        @echo -n "[Linking] $@... "
+#       @ar rcs lib/x64_linux/static/libCVRPSep.a $(OBJ)
+        g++ $(FLAGS) -o gencarp $(OBJ)
+        @echo "done!"
 
-$(TARGETDIR)/Individu.o: Individu.h Individu.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Individu.cpp -o $(TARGETDIR)/Individu.o
+debug: dir-debug $(DOBJ)
+        @echo -n "[Linking debug] $@..."
+        @ar rcs lib/x64_linux/static_debug/libCVRPSep.a $(DOBJ)
+        @echo "done!"
 
-$(TARGETDIR)/LocalSearch.o: LocalSearch.h LocalSearch.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c LocalSearch.cpp -o $(TARGETDIR)/LocalSearch.o
-	
-$(TARGETDIR)/main.o: main.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c main.cpp -o $(TARGETDIR)/main.o
-	
-$(TARGETDIR)/Noeud.o: Noeud.h Noeud.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Noeud.cpp -o $(TARGETDIR)/Noeud.o
+obj: $(OBJ)
 
-$(TARGETDIR)/SeqData.o: SeqData.h
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c SeqData.cpp -o $(TARGETDIR)/SeqData.o
+dobj: $(DOBJ)
 
-$(TARGETDIR)/Params.o: Params.h Params.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Params.cpp -o $(TARGETDIR)/Params.o
+release/%.o: source/%.cpp
+        @echo -n "[Compiling] $@... "
+        @$(CC) -c -o $@ $< $(FLAGS) -I./include
+        @echo "done!"
 
-$(TARGETDIR)/Population.o: Population.h Population.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Population.cpp -o $(TARGETDIR)/Population.o
-
-$(TARGETDIR)/Route.o: Route.h Route.cpp
-	$(CCC) $(CCFLAGS) $(CPPFLAGS) -c Route.cpp -o $(TARGETDIR)/Route.o
+debug/%.o: source/%.cpp
+        @echo -n "[Compiling debug] $@... "
+        @$(CC) -c -o $@ $< $(DFLAGS) -I./include
+        @echo "done!"
 
 clean:
-	 $(RM) \
-	$(TARGETDIR)/gencarp \
-	$(TARGETDIR)/Client.o \
-        $(TARGETDIR)/Vehicle.o \
-       $(TARGETDIR)/main.o \
-     $(TARGETDIR)/commandline.o \
-	 $(TARGETDIR)/Genetic.o \
-     $(TARGETDIR)/Individu.o \
-     $(TARGETDIR)/LocalSearch.o \
-     $(TARGETDIR)/Noeud.o \
-     $(TARGETDIR)/SeqData.o \
-     $(TARGETDIR)/Params.o \
-     $(TARGETDIR)/Population.o \
-     $(TARGETDIR)/Route.o
+        @echo -n "[Cleaning] release debug... "
+        -@rm -rf release debug 2>/dev/null || true
+        @echo "done!"
 
+dir:
+        @mkdir -p release
+        @mkdir -p lib/x64_linux/static
 
-
+dir-debug:
+        @mkdir -p debug
+        @mkdir -p lib/x64_linux/static_debug
